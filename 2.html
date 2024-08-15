@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app" v-cloak> 
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> 
+
+    <script>
+        const App = {
+            data() {
+                return {
+                    name: "Joe", 
+                    inputValue: "",
+                    notes: ["Note 1", "Note 2"]
+                }
+            },
+
+            template: `
+                <div>
+                    <p>Hey {{ name }}</p>    
+                </div>
+            `                      // Template
+        }
+
+        const app = Vue.createApp(App)
+
+        app.mount('.app')
+
+    </script>
+</body>
+</html>
