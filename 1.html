@@ -4,15 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        [v-cloak] {
+            display: none; /** To prevent from showing without interpolation **/
+        }
+    </style>
 </head>
 <body>
-    <div class="app">
+    <div class="app" v-cloak> <!-- To prevent from showing without interpolation -->
 
         <p>
-            {{ counter }} <!-- Interpolation -->
+            {{ counter }} <!-- Interpolation, also with v-text, v-once, v-html -->
         </p>
 
-        <div v-on:click="counter++">increase</div> <!-- Directive -->
+        <div 
+            :style="{color: inputValue < 5 ? 'red' : 'green', backgroundColor: 'yellow'}"
+            :class="inputValue < 5 ? 'red' : 'green'"
+            v-on:click="counter++">increase
+        </div> <!-- Directive --> 
+            <!-- Dynamic styles and classes (there are two more manners to create dynamic classes) -->
+
+        <input 
+            type="text" 
+            v-bind:placeholder="counter" 
+            :value="inputValue"
+            v-on:input="inputChangeHandler"
+            @keypress.enter="addNote"          
+        /> <!-- Binding attributes - also :placeholder="counter"--> <!-- On Key press - also @keypress.enter="addNote" -->
+
+        <input 
+            type="text" 
+            v-bind:placeholder="counter" 
+            v-model="inputValue"
+            @keypress.enter="addNote"          
+        /> <!-- V-mode instead of previour bulky way"-->
+
+        <p>Input Value: {{inputValue}}</p>
+
+        <button v-on:click="addNote">Add note</button>
+
+        <h2>Notes:</h2>
+
+        <ul v-if="notes.length !== 0">                     <!-- If Directive -->
+            <li v-for="(note, index) in notes">
+                {{ index + 1 }} {{ toUpperCase(note) }}                  <!-- Array Interpolation -->
+                                                                         <!-- Function Interpolation - Change var rendered only -->
+                <button 
+                    v-on:click="removeNote(index, $event)" 
+                >remove</button> <!-- Additional event param -->
+            </li>
+        </ul>
+
+        <p v-else>No notes</p>
+
+        <p>Doubled number of notes: {{ doubleCountComputed }}</p> <!-- Computed methods are here as properties -->
     </div>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> <!-- CDN -->
 
@@ -20,7 +65,36 @@
         const App = {
             data() {
                 return {
-                    counter: 0 // Data for DOM
+                    counter: 0, // Data for DOM
+                    inputValue: "",
+                    notes: ["Note 1", "Note 2"]
+                }
+            },
+
+            methods: {
+                inputChangeHandler(e) {
+                    this.inputValue = e.target.value // Two-ways biding
+                },
+                addNote() {
+                    this.notes.push(this.inputValue)
+                    this.inputValue = ""
+                },
+                removeNote(index, event) {
+                    this.notes.splice(index, 1)
+                },
+                toUpperCase(item) {
+                    return item.toUpperCase()
+                }
+            },
+            computed: {
+                doubleCountComputed() {
+                    return this.notes.length * 2 // Called only when notes length is changed
+                }
+            },
+            watch: {
+                inputValue(value) {
+                    console.log('Input value changed', value) // Watches vars
+                    
                 }
             }
         }
