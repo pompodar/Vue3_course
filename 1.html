@@ -39,6 +39,13 @@
             @keypress.enter="addNote"          
         /> <!-- V-mode instead of previour bulky way"-->
 
+        <input 
+            type="text" 
+            v-bind:placeholder="counter" 
+            ref="myInput"
+            @keypress.enter="addNote"          
+        /> <!-- Ref instead of v-model"-->
+
         <p>Input Value: {{inputValue}}</p>
 
         <button v-on:click="addNote">Add note</button>
@@ -91,6 +98,7 @@
                 },
                 addNote() {
                     this.notes.push(this.inputValue)
+                    console.log(this.$refs.myInput.value); // Fetching refs
                     this.inputValue = ""
                 },
                 removeNote(index, event) {
